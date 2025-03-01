@@ -1,0 +1,20 @@
+{
+    "name": "Driver Performance & Scratchie Rewards",
+    "supportEmail": "james@scratchie.com",
+    "version": "1.0.0",
+    "items": [
+      {
+        "page": "DriveAppLink",
+        "click": "dashboardLink",
+        "path": "dist/index.html",
+        "icon": "images/icon.svg",
+        "name": { "en": "Performance Dashboard" }
+      },
+      {
+        "page": "DriveSettings",
+        "click": "settingsLink",
+        "path": "dist/index.html#settings",
+        "name": { "en": "Performance Settings" }
+      }
+    ]
+  }

@@ -3,4 +3,6 @@ dist
 package-lock.json
 .env
 .cursorrules
-config.json
+# Allow templates
+!config.template.json
+!src/config.template.json

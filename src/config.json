@@ -1,0 +1,24 @@
+{
+  "name": "geotab-drive-scratchie",
+  "supportEmail": "james@scratchie.com",
+  "version": "0.0.1",
+  "items": [{
+    
+    
+    "url": "geotabDriveScratchie.html",
+    "category": "DriveAppLink/",
+    "menuName": {
+      "en": "geotab drive scratchie"
+    },
+    
+    "icon": "images/icon.svg"
+  }],
+  
+  
+  "dev": {
+    "root": "geotabDriveScratchie",
+    "dist": {
+      "host": "https://scratchie.com/geotabdrive/"
+    }
+  }
+}
