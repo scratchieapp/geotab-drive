@@ -7,7 +7,8 @@
     "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
     "build": "webpack",
     "dev": "webpack serve --config webpack.dev.js",
-    "postbuild": "node zip.util.js"
+    "postbuild": "node zip.util.js",
+    "test-geotab": "node scripts/test-geotab-api.js"
   },
   "keywords": [],
   "author": "",
@@ -59,7 +60,11 @@
   "dependencies": {
     "@geotab/zenith": "^1.15.0",
     "chart.js": "^4.4.8",
+    "cookie": "^0.5.0",
+    "dotenv": "^16.3.1",
     "mg-api-js": "^2.1.3",
+    "next": "^13.4.19",
+    "node-fetch": "^2.6.11",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0"
