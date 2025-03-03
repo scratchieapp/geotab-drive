@@ -7,5 +7,11 @@ module.exports = {
         destination: '/api/:path*',
       },
     ];
-  }
+  },
+  // Ensure we can serve static assets from public
+  reactStrictMode: true,
+  // Output as a standalone app
+  output: 'standalone',
+  // Disable unnecessary features
+  swcMinify: true,
 };
