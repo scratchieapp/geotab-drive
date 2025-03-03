@@ -16,12 +16,6 @@ module.exports = {
   swcMinify: true,
   // Add webpack configuration to handle @geotab/zenith properly
   webpack: (config, { isServer }) => {
-    // Handle CSS, SASS, and less files from @geotab/zenith
-    config.module.rules.push({
-      test: /\.(css|scss|sass|less)$/,
-      use: ['style-loader', 'css-loader'],
-    });
-
     // Handle font and svg files
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
