@@ -1,8 +1,28 @@
 // pages/index.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-// Import Zenith UI components
-import { Button, TextField, Card, CardContent } from "@geotab/zenith";
+import dynamic from 'next/dynamic';
+import { 
+  Card, 
+  Button, 
+  TextField, 
+  CardContent 
+} from '../components/ZenithComponents';
+
+// Dynamically import Zenith components with SSR disabled
+const ZenithComponents = dynamic(
+  () => import('../components/ZenithComponents'),
+  { ssr: false }
+);
+
+// Create a placeholder component for server-side rendering
+const LoadingPlaceholder = () => (
+  <div style={{ maxWidth: "400px", margin: "100px auto", textAlign: "center", padding: "20px" }}>
+    <div style={{ padding: "20px", border: "1px solid #eee", borderRadius: "8px" }}>
+      <h3>Loading...</h3>
+    </div>
+  </div>
+);
 
 export default function LoginPage({}) {
   const router = useRouter();
@@ -11,6 +31,12 @@ export default function LoginPage({}) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isClient, setIsClient] = useState(false);
+
+  // Only render client-side components after initial render
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,46 +63,25 @@ export default function LoginPage({}) {
     }
   };
 
-  return (
-    <div style={{ maxWidth: "400px", margin: "100px auto", textAlign: "center" }}>
-      <Card>
-        <CardContent>
-          <h3 className="heading-02-mobile-drive">Geotab Driver Dashboard Login</h3>
-          <form onSubmit={handleSubmit}>
-            <TextField 
-              label="Database" 
-              placeholder="Database name" 
-              value={database} 
-              onChange={e => setDatabase(e.target.value)} 
-              required 
-              style={{ marginBottom: "1rem" }}
-            />
-            <TextField 
-              label="Username" 
-              placeholder="Email or username" 
-              value={username} 
-              onChange={e => setUsername(e.target.value)} 
-              required 
-              style={{ marginBottom: "1rem" }}
-            />
-            <TextField 
-              type="password" 
-              label="Password" 
-              placeholder="Password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
-              style={{ marginBottom: "1rem" }}
-            />
-            {error && <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}
-            <Button type="submit" appearance="primary" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  // Render client-side form with Zenith components
+  if (isClient) {
+    return (
+      <ZenithComponents 
+        database={database}
+        username={username}
+        password={password}
+        loading={loading}
+        error={error}
+        setDatabase={setDatabase}
+        setUsername={setUsername}
+        setPassword={setPassword}
+        handleSubmit={handleSubmit}
+      />
+    );
+  }
+
+  // Render placeholder for server-side
+  return <LoadingPlaceholder />;
 }
 
 // Note: We could add getServerSideProps here to redirect if already logged in (session cookie present).

@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Card, CardContent, Button, TextField } from "@geotab/zenith";
+import { 
+  Card, 
+  Button, 
+  TextField, 
+  CardContent 
+} from "../components/ZenithComponents";
 
 export default function TestConnectionPage() {
   const [database, setDatabase] = useState("");

@@ -1,5 +1,5 @@
 // pages/dashboard.js
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import DriverTable from "../components/DriverTable";
 import { 
@@ -16,7 +16,9 @@ import {
   IconStar,
   IconTicket,
   IconPeople
-} from "@geotab/zenith";
+} from "../components/ZenithComponents";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line } from 'react-chartjs-2';
 
 // Sample data for top performers - replace with API data later
 const topPerformers = [
@@ -86,7 +88,7 @@ export default function DashboardPage() {
     // Fetch driver performance data from our API
     async function fetchDrivers() {
       try {
-        const res = await fetch("/api/drivers");
+        const res = await fetch("/api/hybrid-drivers");
         if (res.status === 401) {
           // Session invalid or expired – redirect to login
           router.replace("/");
@@ -96,6 +98,7 @@ export default function DashboardPage() {
         if (!res.ok) {
           throw new Error(data.error || "Failed to load driver data");
         }
+        console.log("Retrieved driver data:", data);
         setDrivers(data);
       } catch (err) {
         console.error("Error loading drivers:", err);
