@@ -1,5 +1,5 @@
 // src/app/scripts/components/DriverDashboard.tsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Card, 
   Cards,
@@ -7,16 +7,73 @@ import {
   SummaryTileBar,
   Button
 } from "@geotab/zenith";
-import { allDrivers, getTopPerformers, getMostImproved, getTopDriversForChart } from "../../../data/fakeData";
+import { getTopPerformers, getMostImproved, getTopDriversForChart } from "../../../data/fakeData";
 import DriverPerformanceChart from "./DriverPerformanceChart";
 import DriverTable from "../../../../components/DriverTable"; // adjust path if needed
 
-// Get data from our centralized data source
-const top3 = getTopPerformers(3);         // top 3 by score
-const improved = getMostImproved(2);      // top 2 by improvement
-const topDriversForChart = getTopDriversForChart(5); // top 5 for the chart
-
+// DriverDashboard now uses real driver names from Geotab API
 const DriverDashboard: React.FC = () => {
+  // Add state for managing drivers data
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Derived data after fetching
+  const [top3, setTop3] = useState<any[]>([]);
+  const [improved, setImproved] = useState<any[]>([]);
+  const [topDriversForChart, setTopDriversForChart] = useState<any[]>([]);
+  
+  // Function to fetch driver data from our new hybrid API
+  useEffect(() => {
+    async function fetchDrivers() {
+      try {
+        setLoading(true);
+        // Use the new hybrid endpoint
+        const response = await fetch('/api/hybrid-drivers');
+        
+        // Check for authentication errors
+        if (response.status === 401) {
+          setError("Your session has expired. Please login again.");
+          // You might want to redirect to login here
+          return;
+        }
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch drivers: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(`Fetched ${data.length} drivers from hybrid API`);
+        
+        // Set the drivers data
+        setDrivers(data);
+        
+        // Calculate derived data
+        // For top 3 performers, sort by score in descending order
+        const sortedByScore = [...data].sort((a, b) => b.score - a.score);
+        setTop3(sortedByScore.slice(0, 3));
+        
+        // For most improved, sort by improvement in descending order
+        const sortedByImprovement = [...data]
+          .filter(driver => driver.improvement !== undefined)
+          .sort((a, b) => (b.improvement || 0) - (a.improvement || 0));
+        setImproved(sortedByImprovement.slice(0, 2));
+        
+        // For chart, use top 5 by score
+        setTopDriversForChart(sortedByScore.slice(0, 5));
+        
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching drivers:", err);
+        setError("Failed to load driver data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchDrivers();
+  }, []);
+
   // Function to handle awarding a scratchie
   const handleAwardScratchie = (driverId: string) => {
     // In a real app, this would be an actual API call
@@ -29,6 +86,35 @@ const DriverDashboard: React.FC = () => {
       font-size: 0.6em !important;
     }
   `;
+
+  // Show loading spinner while data is being fetched
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div className="zenith-loading" style={{ margin: 'auto' }}>
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="20" fill="none" strokeWidth="4" stroke="#2196F3" />
+            </svg>
+          </div>
+          <p>Loading driver data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error message if there was an error fetching data
+  if (error) {
+    return (
+      <div style={{ textAlign: 'center', padding: '2rem', color: 'red' }}>
+        <h3>Error</h3>
+        <p>{error}</p>
+        <Button type="primary" onClick={() => window.location.reload()}>
+          Try Again
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -290,7 +376,7 @@ const DriverDashboard: React.FC = () => {
       <h4 className="heading-03-mobile-drive" style={{ margin: "2rem 0 1rem" }}>
         All Drivers
       </h4>
-      <DriverTable drivers={allDrivers} />
+      <DriverTable drivers={drivers} />
     </div>
   );
 };

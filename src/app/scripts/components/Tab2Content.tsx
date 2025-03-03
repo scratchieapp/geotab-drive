@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { 
   Button, 
   Table, 
@@ -12,7 +12,7 @@ import {
   IconChevronTop,
   IconChevronDownSmall
 } from "@geotab/zenith";
-import { allDrivers, Driver } from "../../../data/fakeData";
+import { Driver } from "../../../data/fakeData";
 
 // Define the interface for table entities
 interface DriverEntity extends Driver {
@@ -20,7 +20,9 @@ interface DriverEntity extends Driver {
 }
 
 export const Tab2Content = () => {
-  const [drivers, setDrivers] = useState<Driver[]>(allDrivers);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showInactive, setShowInactive] = useState(true);
   const isMobile = useMobile();
 
@@ -29,6 +31,28 @@ export const Tab2Content = () => {
     sortColumn: "collisionRisk",
     sortDirection: ColumnSortDirection.Ascending
   });
+
+  // Fetch driver data from the hybrid-drivers API
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/hybrid-drivers');
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        const data = await response.json();
+        setDrivers(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch driver data:", err);
+        setError("Failed to load driver data. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchDrivers();
+  }, []);
 
   const handleToggleActive = (id: string) => {
     setDrivers(prev =>
@@ -255,18 +279,40 @@ export const Tab2Content = () => {
         </label>
       </div>
       
-      {/* Zenith Table Component - added minHeight to make it take full available space */}
-      <div style={{ minHeight: "calc(100vh - 250px)" }}>
-        <Table 
-          columns={columns} 
-          entities={sortedData} 
-          sortable={{
-            pageName: "driverLeaderboard",
-            value: sortValue,
-            onChange: setSortValue
-          }}
-        />
-      </div>
+      {/* Loading and Error states */}
+      {loading && (
+        <div style={{ textAlign: "center", padding: "2rem" }}>
+          <div style={{ marginBottom: "1rem" }}>Loading driver data...</div>
+          <div className="zen-loading-icon" aria-label="Loading"></div>
+        </div>
+      )}
+      
+      {error && !loading && (
+        <div style={{ 
+          padding: "1rem", 
+          backgroundColor: "#FEECEB", 
+          color: "#CC0000",
+          borderRadius: "4px",
+          marginBottom: "1rem" 
+        }}>
+          {error}
+        </div>
+      )}
+      
+      {/* Zenith Table Component - only show when data is loaded */}
+      {!loading && !error && (
+        <div style={{ minHeight: "calc(100vh - 250px)" }}>
+          <Table 
+            columns={columns} 
+            entities={sortedData} 
+            sortable={{
+              pageName: "driverLeaderboard",
+              value: sortValue,
+              onChange: setSortValue
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
