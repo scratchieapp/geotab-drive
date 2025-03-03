@@ -8,9 +8,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "dev:frontend": "webpack serve --config webpack.dev.js",
-    "dev:api": "next dev -p 3001",
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:api\"",
+    "dev:legacy": "concurrently \"webpack serve --config webpack.dev.js\" \"next dev -p 3001\"",
     "postbuild": "node zip.util.js",
     "test-geotab": "node scripts/test-geotab-api.js"
   },
@@ -32,6 +30,7 @@
     "css-loader": "^6.5.1",
     "eslint": "^8.1.0",
     "eslint-webpack-plugin": "^3.1.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.4.0",
     "mini-css-extract-plugin": "^2.4.7",
     "postcss-loader": "^6.2.1",
@@ -39,6 +38,7 @@
     "style-loader": "^3.3.1",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
+    "url-loader": "^4.1.1",
     "webpack": "^5.59.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
