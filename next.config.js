@@ -18,22 +18,10 @@ const nextConfig = {
   // Add webpack configuration to handle @geotab/zenith properly
   transpilePackages: ['@geotab/zenith'],
   webpack: (config) => {
-    // Handle font files
+    // Handle font and SVG files
     config.module.rules.push({
-      test: /\.(woff|woff2|eot|ttf|otf)$/i,
+      test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
       type: 'asset/resource',
-    });
-
-    // Handle SVG files
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
-
-    // Handle CSS files from @geotab/zenith
-    config.module.rules.push({
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader'],
     });
 
     return config;
