@@ -5,8 +5,7 @@
     "node": true
   },
   "extends": [
-    "eslint:recommended",
-    "next/core-web-vitals"
+    "eslint:recommended"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -32,13 +31,5 @@
     "dialogPolyfill": true,
     "GeotabApi": true,
     "rison": true
-  },
-  "overrides": [
-    {
-      "files": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-      "parserOptions": {
-        "sourceType": "module"
-      }
-    }
-  ]
+  }
 } 
