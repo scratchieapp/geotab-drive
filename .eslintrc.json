@@ -1,42 +1,7 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
-  ],
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 12,
-    "sourceType": "module"
-  },
-  "plugins": [
-    "react"
-  ],
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
+  "extends": ["next/core-web-vitals"],
   "rules": {
-    "quotes": [
-      "error",
-      "single"
-    ],
-    "no-alert": "error",
     "no-unused-vars": "warn",
-    "react/jsx-uses-react": "error",
-    "react/jsx-uses-vars": "error"
-  },
-  "globals": {
-    "geotab": true,
-    "dialogPolyfill": true,
-    "GeotabApi": true,
-    "rison": true
+    "no-console": "warn"
   }
 } 
