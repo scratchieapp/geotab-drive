@@ -1,6 +1,21 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
+// Create a no-SSR wrapper component
+const NoSSR = ({ children }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <div className="zenith-spinner">Loading components...</div>;
+  }
+
+  return children;
+};
+
 // Add missing components
 export const Spinner = () => <div className='zenith-spinner'>Loading...</div>;
 export const IconTicket = () => <span className='zenith-icon-ticket'>🎟️</span>;
@@ -100,7 +115,11 @@ const ZenithComponentsWrapper = ({ children }) => {
     return null;
   }
 
-  return children(components);
+  return (
+    <NoSSR>
+      {children(components)}
+    </NoSSR>
+  );
 };
 
 export default ZenithComponentsWrapper; 
