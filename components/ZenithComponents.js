@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Card as ZenithCard,
   SummaryTile as ZenithSummaryTile,
@@ -11,7 +10,6 @@ import {
   IconMoney as ZenithIconMoney,
   IconStar as ZenithIconStar,
   IconPeople as ZenithIconPeople,
-  // Add any other Zenith components used in the project
 } from '@geotab/zenith';
 
 // Export components with proper names
@@ -28,18 +26,18 @@ export const IconStar = ZenithIconStar;
 export const IconPeople = ZenithIconPeople;
 
 // Add missing components
-export const Spinner = () => <div className="zenith-spinner">Loading...</div>;
-export const IconTicket = () => <span className="zenith-icon-ticket">🎟️</span>;
-export const CardContent = ({ children }) => <div className="zenith-card-content">{children}</div>;
+export const Spinner = () => <div className='zenith-spinner'>Loading...</div>;
+export const IconTicket = () => <span className='zenith-icon-ticket'>🎟️</span>;
+export const CardContent = ({ children }) => <div className='zenith-card-content'>{children}</div>;
 export const TextField = ({ 
   label, 
   value, 
   onChange, 
   placeholder, 
-  type = "text", 
-  className = "",
+  type = 'text', 
+  className = '',
   error = false,
-  helperText = "" 
+  helperText = '' 
 }) => (
   <div className={`zenith-text-field ${className} ${error ? 'error' : ''}`}>
     {label && <label>{label}</label>}
@@ -49,7 +47,7 @@ export const TextField = ({
       onChange={onChange}
       placeholder={placeholder}
     />
-    {error && helperText && <div className="helper-text">{helperText}</div>}
+    {error && helperText && <div className='helper-text'>{helperText}</div>}
   </div>
 );
 
@@ -73,47 +71,47 @@ const ZenithComponentsWrapper = ({
           <h3>Enter Geotab Credentials</h3>
           <form onSubmit={handleSubmit}>
             <TextField 
-              label="Database" 
-              placeholder="Your Geotab database" 
+              label='Database' 
+              placeholder='Your Geotab database' 
               value={database} 
               onChange={e => setDatabase(e.target.value)} 
               required 
-              style={{ marginBottom: "1rem" }}
+              style={{ marginBottom: '1rem' }}
             />
             <TextField 
-              label="Username" 
-              placeholder="Your Geotab username" 
+              label='Username' 
+              placeholder='Your Geotab username' 
               value={username} 
               onChange={e => setUsername(e.target.value)} 
               required 
-              style={{ marginBottom: "1rem" }}
+              style={{ marginBottom: '1rem' }}
             />
             <TextField 
-              type="password" 
-              label="Password" 
-              placeholder="Your Geotab password" 
+              type='password' 
+              label='Password' 
+              placeholder='Your Geotab password' 
               value={password} 
               onChange={e => setPassword(e.target.value)} 
               required 
-              style={{ marginBottom: "1rem" }}
+              style={{ marginBottom: '1rem' }}
             />
             <Button 
-              type="primary" 
-              htmlType="submit" 
+              type='primary' 
+              htmlType='submit' 
               disabled={loading}
             >
-              {loading ? "Testing Connection..." : "Test Connection"}
+              {loading ? 'Testing Connection...' : 'Test Connection'}
             </Button>
           </form>
 
           {error && (
             <div style={{ 
-              marginTop: "20px", 
-              padding: "10px", 
-              backgroundColor: "#ffebee", 
-              border: "1px solid #ffcdd2",
-              borderRadius: "4px",
-              color: "#b71c1c" 
+              marginTop: '20px', 
+              padding: '10px', 
+              backgroundColor: '#ffebee', 
+              border: '1px solid #ffcdd2',
+              borderRadius: '4px',
+              color: '#b71c1c' 
             }}>
               <h4>Error:</h4>
               <p>{error}</p>
@@ -122,12 +120,12 @@ const ZenithComponentsWrapper = ({
 
           {result && result.success && (
             <div style={{ 
-              marginTop: "20px", 
-              padding: "10px", 
-              backgroundColor: "#e8f5e9", 
-              border: "1px solid #c8e6c9",
-              borderRadius: "4px",
-              color: "#1b5e20" 
+              marginTop: '20px', 
+              padding: '10px', 
+              backgroundColor: '#e8f5e9', 
+              border: '1px solid #c8e6c9',
+              borderRadius: '4px',
+              color: '#1b5e20' 
             }}>
               <h4>✅ Connection Successful!</h4>
               <p>Successfully connected to Geotab API server: <strong>{result.server}</strong></p>
@@ -149,7 +147,7 @@ const ZenithComponentsWrapper = ({
         </CardContent>
       </Card>
       
-      <Card style={{ marginTop: "20px" }}>
+      <Card style={{ marginTop: '20px' }}>
         <CardContent>
           <h3>Usage Notes</h3>
           <ul>
