@@ -35,7 +35,24 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
+        crypto: false,
+        stream: false,
+        path: false,
+        zlib: false,
+        http: false,
+        https: false,
+        os: false,
+        url: false,
+        assert: false,
+        buffer: false,
+        process: false,
+        util: false,
       };
+    }
+
+    // Add externals for client-side only modules
+    if (isServer) {
+      config.externals = [...(config.externals || []), 'window'];
     }
 
     return config;
