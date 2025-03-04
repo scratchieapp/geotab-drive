@@ -44,6 +44,21 @@ export const TextField = ({
   </div>
 );
 
+// Export all Zenith components
+export const {
+  Card,
+  SummaryTile,
+  SummaryTileBar,
+  Button,
+  Cards,
+  LineChart,
+  IconArrowTop,
+  IconArrowBottom,
+  IconMoney,
+  IconStar,
+  IconPeople,
+} = ZenithComponents;
+
 // Default export for dynamic import
 const ZenithComponentsWrapper = ({ 
   database,
@@ -59,7 +74,7 @@ const ZenithComponentsWrapper = ({
 }) => {
   return (
     <>
-      <ZenithComponents.Card>
+      <Card>
         <CardContent>
           <h3>Enter Geotab Credentials</h3>
           <form onSubmit={handleSubmit}>
@@ -88,13 +103,13 @@ const ZenithComponentsWrapper = ({
               required 
               style={{ marginBottom: '1rem' }}
             />
-            <ZenithComponents.Button 
+            <Button 
               type='primary' 
               htmlType='submit' 
               disabled={loading}
             >
               {loading ? 'Testing Connection...' : 'Test Connection'}
-            </ZenithComponents.Button>
+            </Button>
           </form>
 
           {error && (
@@ -138,9 +153,9 @@ const ZenithComponentsWrapper = ({
             </div>
           )}
         </CardContent>
-      </ZenithComponents.Card>
+      </Card>
       
-      <ZenithComponents.Card style={{ marginTop: '20px' }}>
+      <Card style={{ marginTop: '20px' }}>
         <CardContent>
           <h3>Usage Notes</h3>
           <ul>
@@ -150,7 +165,7 @@ const ZenithComponentsWrapper = ({
             <li>No data is stored - credentials are only used for this test</li>
           </ul>
         </CardContent>
-      </ZenithComponents.Card>
+      </Card>
     </>
   );
 };
