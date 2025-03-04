@@ -3,7 +3,9 @@
     [
       "next/babel",
       {
-        "preset-env": {},
+        "preset-env": {
+          "modules": false
+        },
         "preset-react": {},
         "transform-runtime": {},
         "styled-jsx": {},

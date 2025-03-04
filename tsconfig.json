@@ -21,17 +21,23 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "strictNullChecks": true
   },
   "include": [
+    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     ".next",
     "dist"
+  ],
+  "plugins": [
+    {
+      "name": "next"
+    }
   ]
 }
