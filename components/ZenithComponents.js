@@ -1,29 +1,22 @@
-import {
-  Card as ZenithCard,
-  SummaryTile as ZenithSummaryTile,
-  SummaryTileBar as ZenithSummaryTileBar,
-  Button as ZenithButton,
-  Cards as ZenithCards,
-  LineChart as ZenithLineChart,
-  IconArrowTop as ZenithIconArrowTop,
-  IconArrowBottom as ZenithIconArrowBottom,
-  IconMoney as ZenithIconMoney,
-  IconStar as ZenithIconStar,
-  IconPeople as ZenithIconPeople,
-} from '@geotab/zenith';
+import dynamic from 'next/dynamic';
 
-// Export components with proper names
-export const Card = ZenithCard;
-export const SummaryTile = ZenithSummaryTile;
-export const SummaryTileBar = ZenithSummaryTileBar;
-export const Button = ZenithButton;
-export const Cards = ZenithCards;
-export const LineChart = ZenithLineChart;
-export const IconArrowTop = ZenithIconArrowTop;
-export const IconArrowBottom = ZenithIconArrowBottom;
-export const IconMoney = ZenithIconMoney;
-export const IconStar = ZenithIconStar;
-export const IconPeople = ZenithIconPeople;
+// Dynamically import Zenith components with SSR disabled
+const ZenithComponents = dynamic(
+  () => import('@geotab/zenith').then(mod => ({
+    Card: mod.Card,
+    SummaryTile: mod.SummaryTile,
+    SummaryTileBar: mod.SummaryTileBar,
+    Button: mod.Button,
+    Cards: mod.Cards,
+    LineChart: mod.LineChart,
+    IconArrowTop: mod.IconArrowTop,
+    IconArrowBottom: mod.IconArrowBottom,
+    IconMoney: mod.IconMoney,
+    IconStar: mod.IconStar,
+    IconPeople: mod.IconPeople,
+  })),
+  { ssr: false }
+);
 
 // Add missing components
 export const Spinner = () => <div className='zenith-spinner'>Loading...</div>;
@@ -66,7 +59,7 @@ const ZenithComponentsWrapper = ({
 }) => {
   return (
     <>
-      <Card>
+      <ZenithComponents.Card>
         <CardContent>
           <h3>Enter Geotab Credentials</h3>
           <form onSubmit={handleSubmit}>
@@ -95,13 +88,13 @@ const ZenithComponentsWrapper = ({
               required 
               style={{ marginBottom: '1rem' }}
             />
-            <Button 
+            <ZenithComponents.Button 
               type='primary' 
               htmlType='submit' 
               disabled={loading}
             >
               {loading ? 'Testing Connection...' : 'Test Connection'}
-            </Button>
+            </ZenithComponents.Button>
           </form>
 
           {error && (
@@ -145,9 +138,9 @@ const ZenithComponentsWrapper = ({
             </div>
           )}
         </CardContent>
-      </Card>
+      </ZenithComponents.Card>
       
-      <Card style={{ marginTop: '20px' }}>
+      <ZenithComponents.Card style={{ marginTop: '20px' }}>
         <CardContent>
           <h3>Usage Notes</h3>
           <ul>
@@ -157,7 +150,7 @@ const ZenithComponentsWrapper = ({
             <li>No data is stored - credentials are only used for this test</li>
           </ul>
         </CardContent>
-      </Card>
+      </ZenithComponents.Card>
     </>
   );
 };
