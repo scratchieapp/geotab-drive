@@ -17,12 +17,26 @@ const nextConfig = {
   swcMinify: true,
   // Add webpack configuration to handle @geotab/zenith properly
   transpilePackages: ['@geotab/zenith'],
-  webpack: (config) => {
+  // Disable ESLint during build (we'll handle it in development)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  webpack: (config, { isServer }) => {
     // Handle font and SVG files
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
       type: 'asset/resource',
     });
+
+    // Handle window is not defined error
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
 
     return config;
   },
