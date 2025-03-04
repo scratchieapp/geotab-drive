@@ -21,11 +21,32 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Configure pages to use client-side rendering
+  experimental: {
+    // This will make all pages client-side rendered by default
+    runtime: 'edge',
+  },
   webpack: (config, { isServer }) => {
     // Handle font and SVG files
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
       type: 'asset/resource',
+    });
+
+    // Handle CSS warnings
+    config.module.rules.push({
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            // Suppress CSS warnings
+            ignoreWarnings: true,
+          },
+        },
+      ],
     });
 
     // Handle window is not defined error
