@@ -21,12 +21,23 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Add support for CSS
+  css: {
+    loaderOptions: {
+      ignoreWarnings: true, // Ignore CSS warnings
+    },
+  },
   webpack: (config, { isServer }) => {
     // Handle font and SVG files
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
       type: 'asset/resource',
     });
+    
+    // Add externals for window
+    if (isServer) {
+      config.externals = [...(config.externals || []), 'window'];
+    }
 
     return config;
   },
