@@ -14,7 +14,7 @@ const nextConfig = {
   // Output as a standalone app
   output: 'standalone',
   // Disable unnecessary features
-  swcMinify: true,
+  swcMinify: false, // Disable minification to help debug
   // Add webpack configuration to handle @geotab/zenith properly
   transpilePackages: ['@geotab/zenith', 'react-chartjs-2', 'chart.js'],
   // Disable ESLint during build (we'll handle it in development)
@@ -27,7 +27,7 @@ const nextConfig = {
       ignoreWarnings: true, // Ignore CSS warnings
     },
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     // Handle font and SVG files
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf|svg)$/i,
@@ -43,6 +43,16 @@ const nextConfig = {
         'localStorage',
         'sessionStorage'
       ];
+    }
+
+    // For client-side, add fallbacks for Node.js modules
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false,
+      };
     }
 
     return config;

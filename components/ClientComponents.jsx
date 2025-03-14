@@ -1,19 +1,6 @@
-import React from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { Card, SummaryTile, IconTicket } from '@geotab/zenith';
+import React, { useState, useEffect } from 'react';
+import NoSSR from './NoSSR';
 import DriverTable from './DriverTable';
-
-// Register ChartJS components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 // Generate line chart data
 const generateLineChartData = (data) => {
@@ -69,59 +56,102 @@ const generateLineChartData = (data) => {
   };
 };
 
-const ClientComponents = ({ loading, error, performanceData, topPerformers, mostImproved }) => {
-  if (loading) {
-    return (
+// Loading component
+const LoadingComponent = () => (
+  <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    minHeight: '100vh',
+    background: '#f5f5f5'
+  }}>
+    <div style={{ 
+      textAlign: 'center',
+      padding: '2rem',
+      background: 'white',
+      borderRadius: '8px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+    }}>
       <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '100vh',
-        background: '#f5f5f5'
-      }}>
-        <div style={{ 
-          textAlign: 'center',
-          padding: '2rem',
-          background: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{ 
-            width: '40px', 
-            height: '40px', 
-            border: '4px solid #f3f3f3',
-            borderTop: '4px solid #3498db',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 1rem'
-          }} />
-          <p style={{ color: '#666', margin: 0 }}>Loading dashboard data...</p>
-        </div>
-      </div>
-    );
-  }
+        width: '40px', 
+        height: '40px', 
+        border: '4px solid #f3f3f3',
+        borderTop: '4px solid #3498db',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+        margin: '0 auto 1rem'
+      }} />
+      <p style={{ color: '#666', margin: 0 }}>Loading dashboard...</p>
+    </div>
+  </div>
+);
 
-  if (error) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '100vh',
-        background: '#f5f5f5'
-      }}>
-        <div style={{ 
-          textAlign: 'center',
-          padding: '2rem',
-          background: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <p style={{ color: '#e74c3c', margin: 0 }}>Error: {error}</p>
-        </div>
-      </div>
-    );
+// Error component
+const ErrorComponent = ({ error }) => (
+  <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    minHeight: '100vh',
+    background: '#f5f5f5'
+  }}>
+    <div style={{ 
+      textAlign: 'center',
+      padding: '2rem',
+      background: 'white',
+      borderRadius: '8px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+    }}>
+      <p style={{ color: '#e74c3c', margin: 0 }}>Error: {error}</p>
+    </div>
+  </div>
+);
+
+// This is the inner component that uses Zenith
+const DashboardInner = ({ performanceData, topPerformers, mostImproved }) => {
+  // We need to dynamically import Zenith components at runtime
+  const [components, setComponents] = useState(null);
+  const [chartComponent, setChartComponent] = useState(null);
+
+  useEffect(() => {
+    // Import Zenith components
+    const loadComponents = async () => {
+      try {
+        // Import Zenith
+        const zenith = await import('@geotab/zenith');
+        
+        // Import Chart.js and react-chartjs-2
+        const ChartJS = await import('chart.js');
+        const reactChartjs = await import('react-chartjs-2');
+        
+        // Register Chart.js components
+        ChartJS.Chart.register(
+          ChartJS.CategoryScale,
+          ChartJS.LinearScale,
+          ChartJS.PointElement,
+          ChartJS.LineElement,
+          ChartJS.Title,
+          ChartJS.Tooltip,
+          ChartJS.Legend
+        );
+        
+        setComponents(zenith);
+        setChartComponent(reactChartjs.Line);
+      } catch (err) {
+        console.error('Failed to load components:', err);
+      }
+    };
+    
+    loadComponents();
+  }, []);
+
+  // Don't render until components are loaded
+  if (!components || !chartComponent) {
+    return <LoadingComponent />;
   }
+  
+  const { Card, SummaryTile, IconTicket } = components;
+  const LineChart = chartComponent;
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -184,7 +214,7 @@ const ClientComponents = ({ loading, error, performanceData, topPerformers, most
           Performance Trends
         </h2>
         <div style={{ height: '300px' }}>
-          <Line
+          <LineChart
             data={generateLineChartData(performanceData)}
             options={{
               responsive: true,
@@ -249,6 +279,26 @@ const ClientComponents = ({ loading, error, performanceData, topPerformers, most
         </Card>
       </div>
     </div>
+  );
+};
+
+const ClientComponents = ({ loading, error, performanceData, topPerformers, mostImproved }) => {
+  if (loading) {
+    return <LoadingComponent />;
+  }
+
+  if (error) {
+    return <ErrorComponent error={error} />;
+  }
+
+  return (
+    <NoSSR fallback={<LoadingComponent />}>
+      <DashboardInner
+        performanceData={performanceData}
+        topPerformers={topPerformers}
+        mostImproved={mostImproved}
+      />
+    </NoSSR>
   );
 };
 
