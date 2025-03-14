@@ -16,7 +16,7 @@ const nextConfig = {
   // Disable unnecessary features
   swcMinify: true,
   // Add webpack configuration to handle @geotab/zenith properly
-  transpilePackages: ['@geotab/zenith'],
+  transpilePackages: ['@geotab/zenith', 'react-chartjs-2', 'chart.js'],
   // Disable ESLint during build (we'll handle it in development)
   eslint: {
     ignoreDuringBuilds: true,
@@ -34,9 +34,15 @@ const nextConfig = {
       type: 'asset/resource',
     });
     
-    // Add externals for window
+    // Add externals for window and document
     if (isServer) {
-      config.externals = [...(config.externals || []), 'window'];
+      config.externals = [
+        ...(config.externals || []),
+        'window',
+        'document',
+        'localStorage',
+        'sessionStorage'
+      ];
     }
 
     return config;
